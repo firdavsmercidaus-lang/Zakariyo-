@@ -31,7 +31,8 @@ import {
   Key,
   MessageSquare,
   Send,
-  Smartphone
+  Smartphone,
+  FileText
 } from 'lucide-react';
 import { getAIResponse, translateText } from './services/gemini';
 import { generateVideo } from './services/videoService';
@@ -301,6 +302,29 @@ export default function App() {
   const clearText = () => {
     setSourceText('');
     setTargetText('');
+  };
+
+  const downloadAsFile = () => {
+    if (!targetText) return;
+    const element = document.createElement("a");
+    const file = new Blob([targetText], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = `zakariyo-ai-${Date.now()}.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  const downloadHistory = () => {
+    if (history.length === 0) return;
+    const content = history.map(item => `Savol: ${item.source}\nJavob: ${item.target}\n-------------------\n`).join('\n');
+    const element = document.createElement("a");
+    const file = new Blob([content], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = `zakariyo-ai-tarix-${Date.now()}.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   };
 
   const speak = (text: string, lang?: string) => {
@@ -610,6 +634,13 @@ export default function App() {
                   <div className="absolute bottom-6 sm:bottom-8 right-6 sm:right-8 flex items-center gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all">
                     <button onClick={() => speak(targetText, activeTab === 'translate' ? targetLang : 'uzbek')} className="p-2 sm:p-3 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-lg sm:rounded-xl transition-all"><Volume2 className="w-4 h-4 sm:w-5 sm:h-5" /></button>
                     <button 
+                      onClick={downloadAsFile}
+                      className="p-2 sm:p-3 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-lg sm:rounded-xl transition-all"
+                      title="Faylga yuklash"
+                    >
+                      <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </button>
+                    <button 
                       onClick={copyToClipboard} 
                       className="p-2 sm:p-3 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 rounded-lg sm:rounded-xl transition-all flex items-center gap-2"
                     >
@@ -728,7 +759,10 @@ export default function App() {
                       <History className="w-4 h-4 text-indigo-400" />
                       Recent Chats
                     </h3>
-                    <button onClick={() => setHistory([])} className="text-[10px] font-bold text-white/20 hover:text-red-400 uppercase tracking-widest transition-colors">Clear All</button>
+                    <div className="flex items-center gap-4">
+                      <button onClick={downloadHistory} className="text-[10px] font-bold text-indigo-400 hover:text-indigo-300 uppercase tracking-widest transition-colors">Download History</button>
+                      <button onClick={() => setHistory([])} className="text-[10px] font-bold text-white/20 hover:text-red-400 uppercase tracking-widest transition-colors">Clear All</button>
+                    </div>
                   </div>
                   <div className="p-4 space-y-2">
                     {history.length === 0 ? (
