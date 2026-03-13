@@ -1,7 +1,7 @@
 {
-  "name": "Zakariyo Umzo AI",
-  "short_name": "Zakariyo AI",
-  "description": "Zamonaviy va tezkor AI chat hamda tarjima platformasi",
+  "name": "Zakariyo Umzo",
+  "short_name": "Zakariyo",
+  "description": "Zamonaviy va qulay yordamchi platformasi",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#050505",
